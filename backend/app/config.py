@@ -34,15 +34,31 @@ class BackendConfig(BaseSettings):
         validation_alias=AliasChoices("SUPABASE_ANON_KEY", "ROKOSPY_BACKEND_SUPABASE_ANON_KEY"),
     )
 
-    # CORS origins: comma-separated string or list
-    CORS_ORIGINS: Union[str, List[str]] = "http://localhost:3000,http://127.0.0.1:3000"
+    # CORS origins: comma-separated string, JSON list, or list
+    CORS_ORIGINS: Union[str, List[str]] = Field(
+        default="http://localhost:3000,http://127.0.0.1:3000,https://dr-roposky.vercel.app",
+        validation_alias=AliasChoices("CORS_ORIGINS", "ROKOSPY_BACKEND_CORS_ORIGINS"),
+    )
 
-    @field_validator("CORS_ORIGINS", mode="after")
+    @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
-    def parse_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
+    def parse_cors_origins(cls, v: Union[str, List[str], None]) -> List[str]:
+        if not v:
+            return ["http://localhost:3000", "http://127.0.0.1:3000", "https://dr-roposky.vercel.app"]
         if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
-        return v
+            v_str = v.strip()
+            if v_str.startswith("[") and v_str.endswith("]"):
+                import json
+                try:
+                    parsed = json.loads(v_str)
+                    if isinstance(parsed, list):
+                        return [str(o).strip().rstrip("/") for o in parsed if str(o).strip()]
+                except Exception:
+                    pass
+            return [origin.strip().rstrip("/") for origin in v_str.split(",") if origin.strip()]
+        if isinstance(v, (list, tuple, set)):
+            return [str(origin).strip().rstrip("/") for origin in v if str(origin).strip()]
+        return ["http://localhost:3000", "http://127.0.0.1:3000", "https://dr-roposky.vercel.app"]
 
 
 backend_config = BackendConfig()

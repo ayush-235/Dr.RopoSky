@@ -8,17 +8,64 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-def test_cors_headers_present(client: TestClient):
-    """CORS middleware returns proper headers for allowed origins."""
+def test_cors_headers_present_local_and_production(client: TestClient):
+    """CORS middleware returns proper headers for localhost and production Vercel origins."""
+    for origin in ["http://localhost:3000", "http://127.0.0.1:3000", "https://dr-roposky.vercel.app"]:
+        # Preflight OPTIONS on /api/v1/health
+        response = client.options(
+            "/api/v1/health",
+            headers={
+                "Origin": origin,
+                "Access-Control-Request-Method": "GET",
+            },
+        )
+        assert response.status_code == 200
+        assert response.headers.get("access-control-allow-origin") == origin
+
+        # Preflight OPTIONS on /api/v1/analyze
+        res_analyze_options = client.options(
+            "/api/v1/analyze",
+            headers={
+                "Origin": origin,
+                "Access-Control-Request-Method": "POST",
+            },
+        )
+        assert res_analyze_options.status_code == 200
+        assert res_analyze_options.headers.get("access-control-allow-origin") == origin
+
+        # Actual GET request on /api/v1/health
+        res_get = client.get("/api/v1/health", headers={"Origin": origin})
+        assert res_get.status_code == 200
+        assert res_get.headers.get("access-control-allow-origin") == origin
+
+
+def test_cors_unauthorized_origin_rejected(client: TestClient):
+    """Origins not in CORS_ORIGINS must not receive access-control-allow-origin headers."""
     response = client.options(
-        "/api/v1/health",
+        "/api/v1/analyze",
         headers={
-            "Origin": "http://localhost:3000",
-            "Access-Control-Request-Method": "GET",
+            "Origin": "https://unauthorized-malicious-site.com",
+            "Access-Control-Request-Method": "POST",
         },
     )
-    assert response.status_code == 200
-    assert response.headers.get("access-control-allow-origin") == "http://localhost:3000"
+    assert response.headers.get("access-control-allow-origin") is None
+
+
+def test_cors_config_parsing():
+    """BackendConfig parses comma-separated strings, JSON lists, and strips trailing slashes."""
+    from app.config import BackendConfig
+
+    # 1. Comma-separated with spaces and trailing slashes
+    cfg1 = BackendConfig(CORS_ORIGINS="http://localhost:3000, https://dr-roposky.vercel.app/ , http://127.0.0.1:3000/")
+    assert cfg1.CORS_ORIGINS == ["http://localhost:3000", "https://dr-roposky.vercel.app", "http://127.0.0.1:3000"]
+
+    # 2. JSON list string
+    cfg2 = BackendConfig(CORS_ORIGINS='["http://localhost:3000", "https://dr-roposky.vercel.app"]')
+    assert cfg2.CORS_ORIGINS == ["http://localhost:3000", "https://dr-roposky.vercel.app"]
+
+    # 3. Validation alias via ROKOSPY_BACKEND_CORS_ORIGINS
+    cfg3 = BackendConfig(ROKOSPY_BACKEND_CORS_ORIGINS="https://preview.vercel.app")
+    assert cfg3.CORS_ORIGINS == ["https://preview.vercel.app"]
 
 
 def test_github_url_rejection_schemes(client: TestClient):

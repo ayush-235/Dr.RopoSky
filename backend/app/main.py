@@ -45,8 +45,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=backend_config.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # --- API Router ---
