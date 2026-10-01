@@ -1,0 +1,53 @@
+<svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="dr-fav-shield-border" x1="10" y1="10" x2="90" y2="95" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="30%" stop-color="#00E5FF" />
+      <stop offset="70%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#818CF8" />
+    </linearGradient>
+    <linearGradient id="dr-fav-shield-bg" x1="50" y1="12" x2="50" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B132B" />
+      <stop offset="60%" stop-color="#070D1F" />
+      <stop offset="100%" stop-color="#040711" />
+    </linearGradient>
+    <linearGradient id="dr-fav-mono-cyan" x1="22" y1="26" x2="72" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E0F2FE" />
+      <stop offset="25%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+    <linearGradient id="dr-fav-leg-violet" x1="45" y1="52" x2="88" y2="88" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="35%" stop-color="#6366F1" />
+      <stop offset="75%" stop-color="#A855F7" />
+      <stop offset="100%" stop-color="#C084FC" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Shield Path -->
+  <path
+    d="M50 10 L88 25 C88 56 74 80 50 94 C26 80 12 56 12 25 Z"
+    fill="url(#dr-fav-shield-bg)"
+    stroke="url(#dr-fav-shield-border)"
+    stroke-width="4"
+    stroke-linejoin="round"
+  />
+
+  <!-- Left Spine -->
+  <path d="M26 27 H37 V75 H26 Z" fill="url(#dr-fav-mono-cyan)" />
+
+  <!-- Upper Loop -->
+  <path
+    d="M37 27 H62 C71 27 77 33 77 42 C77 51 71 57 62 57 H37 V27 Z M48 37 V47 H59 C63 47 66 45 66 42 C66 39 63 37 59 37 Z"
+    fill="url(#dr-fav-mono-cyan)"
+  />
+
+  <!-- Dynamic Violet Leg -->
+  <path d="M48 53 L74 82 H88 L60 53 Z" fill="url(#dr-fav-leg-violet)" />
+
+  <!-- Scanning Core Star -->
+  <g transform="translate(48, 42)">
+    <circle cx="0" cy="0" r="3" fill="#00E5FF" opacity="0.6" />
+    <path d="M0 -6 Q0.8 -0.8 6 0 Q0.8 0.8 0 6 Q-0.8 0.8 -6 0 Q-0.8 -0.8 0 -6 Z" fill="#FFFFFF" />
+  </g>
+</svg>

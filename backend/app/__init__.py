@@ -1,0 +1,1 @@
+"""Rokospy Backend Application."""

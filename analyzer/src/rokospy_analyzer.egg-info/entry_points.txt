@@ -1,0 +1,3 @@
+[console_scripts]
+rokospy = rokospy_analyzer.cli:main
+rokospy-analyzer = rokospy_analyzer.cli:main

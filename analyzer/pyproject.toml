@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rokospy-analyzer"
+version = "0.1.0"
+description = "Rokospy Standalone Core Static & Security Analyzer"
+readme = "README.md"
+authors = [{ name = "Rokospy Team" }]
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.0.0",
+    "rich>=13.0.0",
+    "click>=8.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.scripts]
+rokospy = "rokospy_analyzer.cli:main"
+rokospy-analyzer = "rokospy_analyzer.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
